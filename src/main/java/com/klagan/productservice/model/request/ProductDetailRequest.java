@@ -1,4 +1,4 @@
-package com.klagan.productservice.model.bo;
+package com.klagan.productservice.model.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -6,13 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-@Schema(hidden = true)
-public class SimilarProductIds {
-    private List<String> ids;
+@Schema(description = "Object containing ProductDetailRequest")
+public class ProductDetailRequest {
+    private String productId;
 }

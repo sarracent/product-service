@@ -1,5 +1,7 @@
 package com.klagan.productservice.service.impl;
 
+import com.klagan.productservice.annotations.log.LogService;
+import com.klagan.productservice.exception.impl.BusinessException;
 import com.klagan.productservice.model.bo.ProductDetail;
 import com.klagan.productservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import static com.klagan.productservice.constants.Errors.ERROR_BUSINESS_GET_PRODUCTS_DETAIL;
+
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -26,21 +30,27 @@ public class ProductServiceImpl implements ProductService {
     private WebClient webClient;
 
     @Override
+    @LogService
     @Async("threadPoolExecutor")
     public CompletableFuture<List<ProductDetail>> getSimilarProducts(String productId) {
-        List<String> similarIds = webClient.get()
-                .uri(similarIdsUrl, productId)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
-                .block();
+       try {
+           List<String> similarIds = webClient.get()
+                   .uri(similarIdsUrl, productId)
+                   .retrieve()
+                   .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
+                   .block();
 
-        List<CompletableFuture<ProductDetail>> futures = similarIds.stream()
-                .map(this::getProductDetail).toList();
+           List<CompletableFuture<ProductDetail>> futures = similarIds.stream()
+                   .map(this::getProductDetail).toList();
 
-        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-                .thenApply(v -> futures.stream()
-                        .map(CompletableFuture::join)
-                        .collect(Collectors.toList()));
+           return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                   .thenApply(v -> futures.stream()
+                           .map(CompletableFuture::join)
+                           .collect(Collectors.toList()));
+       } catch (Exception e) {
+           throw new BusinessException(ERROR_BUSINESS_GET_PRODUCTS_DETAIL.getCode(), String.format(ERROR_BUSINESS_GET_PRODUCTS_DETAIL.getMessage(), productId));
+       }
+
     }
 
     @Async("threadPoolExecutor")

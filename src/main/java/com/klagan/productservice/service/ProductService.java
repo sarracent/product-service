@@ -6,6 +6,5 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface ProductService {
-
     CompletableFuture<List<ProductDetail>> getSimilarProducts(String productId);
 }
