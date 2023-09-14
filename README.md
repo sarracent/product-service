@@ -6,9 +6,11 @@ Ofrecer una nueva función a nuestros clientes mostrando productos similares al 
 
 **Ejecutar Servicio**
 
-`mvn clean install`
+* Set profile Dev: `-Dspring.profiles.active=dev`
 
-`mvn spring-boot:run`
+* `mvn clean install`
+
+* `mvn spring-boot:run`
 
 **Estructura**
 
