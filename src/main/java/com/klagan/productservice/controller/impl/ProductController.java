@@ -1,4 +1,4 @@
-package com.klagan.productservice.controller;
+package com.klagan.productservice.controller.impl;
 
 import com.klagan.productservice.model.bo.ProductDetail;
 import com.klagan.productservice.service.ProductService;
@@ -24,6 +24,6 @@ public class ProductController {
 
     @GetMapping("/{productId}/similar")
     public ResponseEntity<CompletableFuture<List<ProductDetail>>> getSimilarProducts(@PathVariable String productId) {
-        return ResponseEntity.ok(resilience4jService.executeProducts(() -> productService.fetchSimilarProducts(productId)));
+        return ResponseEntity.ok(resilience4jService.executeProducts(() -> productService.getSimilarProducts(productId)));
     }
 }
